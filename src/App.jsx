@@ -13,6 +13,27 @@ const App = () => {
     back:   new THREE.MeshBasicMaterial({ color: 0x0046ad }), // Blue
     inside: new THREE.MeshBasicMaterial({ color: 0x000000 })  // Black for internals
   };
+  function rotateFace(axis, index, angle) {
+    const spacing = 1.25;
+    const targetCoordinate = index * spacing;
+    const rotationMatrix = new THREE.Matrix4();
+    if(axis==='x') rotationMatrix.makeRotationX(angle);
+    else if(axis==='y') rotationMatrix.makeRotationY(angle);
+    else if(axis==='z') rotationMatrix.makeRotationZ(angle);
+    cubesRef.current.flat(2).forEach(cube => {
+      if(Math.abs(cube.position[axis] - targetCoordinate) < 0.1) {
+        cube.applyMatrix4(rotationMatrix);
+        cube.updateMatrixWorld();
+      }
+      cube.position.x = Math.round(cube.position.x/spacing) * spacing;
+      cube.position.y = Math.round(cube.position.y/spacing) * spacing;
+      cube.position.z = Math.round(cube.position.z/spacing) * spacing;
+      cube.rotation.x = Math.round(cube.rotation.x / (Math.PI / 2)) * (Math.PI / 2);
+      cube.rotation.y = Math.round(cube.rotation.y / (Math.PI / 2)) * (Math.PI / 2);
+      cube.rotation.z = Math.round(cube.rotation.z / (Math.PI / 2)) * (Math.PI / 2);
+    })
+  }
+
   useEffect(() => {
     if (!containerRef.current) return;
     const scene = new THREE.Scene();
@@ -45,6 +66,35 @@ const App = () => {
     }}}
     camera.position.set(3, 3, 5);
 
+    const handleKeyDown = (event) => {
+      switch(event.key.toUpperCase()) {
+        case 'R':
+          rotateFace('x',1,-Math.PI/2);
+          break;
+        case 'L':
+          rotateFace('x',-1,Math.PI/2);
+          break;
+        case 'U':
+          rotateFace('y',1,-Math.PI/2);
+          break;
+        case 'D':
+          rotateFace('y',-1,Math.PI/2);
+          break;
+        case 'F':
+          rotateFace('z',1,-Math.PI/2);
+          break;
+        case 'B':
+          rotateFace('z',-1,Math.PI/2);
+          break;
+        case 'M':
+          rotateFace('x',0,-Math.PI/2);
+          break;  
+        default:
+          break;  
+      }
+    }
+    window.addEventListener('keydown', handleKeyDown);
+
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.target.set(0, 0, 0);
     controls.update();
@@ -56,6 +106,7 @@ const App = () => {
     return () => {
       renderer.setAnimationLoop(null);
       if(containerRef.current) containerRef.current.removeChild(renderer.domElement);
+      window.removeEventListener('keydown', handleKeyDown);
     };
   }, []);
   return <div ref={containerRef} style={{ width: '100vw', height: '100vh', position:'absolute', top:'0', left:'0'}} />;
