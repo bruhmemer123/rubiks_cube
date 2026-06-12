@@ -24,13 +24,13 @@ const App = () => {
       if(Math.abs(cube.position[axis] - targetCoordinate) < 0.1) {
         cube.applyMatrix4(rotationMatrix);
         cube.updateMatrixWorld();
+        cube.position.x = Math.round(cube.position.x/spacing) * spacing;
+        cube.position.y = Math.round(cube.position.y/spacing) * spacing;
+        cube.position.z = Math.round(cube.position.z/spacing) * spacing;
+        cube.rotation.x = Math.round(cube.rotation.x / (Math.PI / 2)) * (Math.PI / 2);
+        cube.rotation.y = Math.round(cube.rotation.y / (Math.PI / 2)) * (Math.PI / 2);
+        cube.rotation.z = Math.round(cube.rotation.z / (Math.PI / 2)) * (Math.PI / 2);
       }
-      cube.position.x = Math.round(cube.position.x/spacing) * spacing;
-      cube.position.y = Math.round(cube.position.y/spacing) * spacing;
-      cube.position.z = Math.round(cube.position.z/spacing) * spacing;
-      cube.rotation.x = Math.round(cube.rotation.x / (Math.PI / 2)) * (Math.PI / 2);
-      cube.rotation.y = Math.round(cube.rotation.y / (Math.PI / 2)) * (Math.PI / 2);
-      cube.rotation.z = Math.round(cube.rotation.z / (Math.PI / 2)) * (Math.PI / 2);
     })
   }
 
